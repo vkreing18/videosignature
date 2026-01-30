@@ -1,0 +1,47 @@
+/* End Page Specific Styles */
+.success-icon-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: rgba(14, 201, 158, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 32px auto;
+}
+
+.success-icon-img {
+  width: 48px;
+  height: 48px;
+}
+
+.end-card {
+  text-align: center;
+  padding: 60px 40px; /* Slightly more padding for the end state */
+}
+
+.success-title {
+  color: #FFFFFF;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.success-body {
+  color: #808080;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 40px;
+}
+
+.next-button {
+  background-color: #0EC99E;
+  color: #000000;
+  padding: 14px 60px;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}

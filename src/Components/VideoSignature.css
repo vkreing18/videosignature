@@ -1,0 +1,129 @@
+/* App.css */
+.fullscreen-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #000000;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.modal-card {
+  background-color: #1A1A1A;
+  padding: 32px;
+  border-radius: 32px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.teal-title {
+  color: #0EC99E;
+  font-size: 22px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-btn {
+  background: #333333;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.divider {
+  height: 1px;
+  background-color: #333333;
+  margin-bottom: 32px;
+}
+
+.content-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(14, 201, 158, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-img {
+  width: 20px;
+  height: 20px;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sub-heading {
+  color: #FFFFFF;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.body-text {
+  color: #808080;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 48px;
+}
+
+.continue-button {
+  background-color: #0EC99E;
+  color: #000000;
+  padding: 12px 36px;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.continue-button:hover {
+  opacity: 0.9;
+}
+
+.livekit-wrapper {
+  height: 100vh;
+  background-color: #111;
+}
