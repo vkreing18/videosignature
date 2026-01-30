@@ -1,129 +1,101 @@
-/* App.css */
-.fullscreen-container {
+/* Global Dark Background */
+.app-dark-bg {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background-color: #000000;
-  font-family: "Inter", sans-serif;
+  background-color: #0c0d0e; /* Figma Background */
+  font-family: 'Inter', sans-serif;
   margin: 0;
-  padding: 0;
 }
 
-.modal-card {
-  background-color: #1A1A1A;
-  padding: 32px;
-  border-radius: 32px;
-  width: 100%;
-  max-width: 520px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+/* Modal and Panel Styles */
+.instruction-modal, .recording-panel {
+  background-color: #121417; /* Figma Card Color */
+  border-radius: 28px;
+  width: 90%;
+  max-width: 580px;
+  padding: 40px;
+  border: 1px solid #1f2227;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 
 .teal-title {
-  color: #0EC99E;
-  font-size: 22px;
-  font-family: 'Inter', sans-serif;
+  color: #0ec99e; /* Figma Teal */
+  font-size: 24px;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
   margin: 0;
 }
 
-.close-btn {
-  background: #333333;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+.modal-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
 }
 
 .divider {
   height: 1px;
-  background-color: #333333;
+  background-color:#3E3E3E;
+  margin: 10px 0 35px 0;
+}
+
+/* Instruction Items */
+.instruction-item {
+  display: flex;
+  gap: 20px;
   margin-bottom: 32px;
 }
 
-.content-section {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.info-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-
 .icon-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(14, 201, 158, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 
-.icon-img {
-  width: 20px;
-  height: 20px;
+.teal-glow { background: rgba(14, 201, 158, 0.1); color: #0ec99e; }
+.teal-check{ background: rgba(14, 201, 158, 0.1); color: #0ec99e; }
+.sub-heading { color: #ffffff; font-size: 1.15rem; font-weight: 400; margin: 0 0 6px 0; }
+.body-text { color: #757575; font-size: 0.95rem; line-height: 1.55; margin: 0; }
+
+.modal-footer { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+.teal-continue-btn {
+  background-color: #0ec99e; color: #000000;
+  padding: 14px 44px; border-radius: 50px; border: none;
+  font-weight: 400; font-size: 1rem; cursor: pointer;
 }
 
-.text-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+
+.compact-video-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 10px auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #1f2227;
 }
 
-.sub-heading {
-  color: #FFFFFF;
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin: 0;
+.signature-video { width: 100%; height: 100%; object-fit: cover; transform: rotateY(180deg); }
+
+.live-rec-pill {
+  position: absolute; top: 12px; right: 12px;
+  background:#FF2424; color: white;
+  padding: 4px 8px; border-radius: 9px;
+  font-size: 0.75rem; font-weight: 400;
 }
 
-.body-text {
-  color: #808080;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  margin: 0;
+.big-time { color: #ffffff; font-size: 1.5rem; font-weight: 400; text-align: center; }
+.time-sub { color: #757575; text-align: center; margin-bottom: 5px; }
+
+.dark-stop-btn {
+  background:#480101; color: #F44336;
+  border: 1px solid #F44336;
+  border-radius: 50px; width: 30%;
+  margin-left: 35%;
+  font-weight: 400; cursor: pointer; transition: 0.2s;
 }
 
-.footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 48px;
-}
-
-.continue-button {
-  background-color: #0EC99E;
-  color: #000000;
-  padding: 12px 36px;
-  border-radius: 50px;
-  border: none;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.continue-button:hover {
-  opacity: 0.9;
-}
-
-.livekit-wrapper {
-  height: 100vh;
-  background-color: #111;
-}
+.dark-stop-btn:hover { background: #3d0e0e; }
