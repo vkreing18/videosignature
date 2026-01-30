@@ -66,3 +66,35 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Global Modal Styles */
+.fullscreen-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #0c0d0e; /* Consistent dark background */
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+.modal-card {
+  background-color: #121417; /* Consistent card color */
+  border-radius: 28px;
+  width: 90%;
+  max-width: 580px; /* Fixed max width for consistency */
+  padding: 40px; /* Consistent padding */
+  border: 1px solid #1f2227;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  min-height: 400px; /* Minimum height to ensure same appearance */
+}
+
+.video-modal {
+  padding: 0; /* No padding for video */
+  width: 90%;
+  max-width: 800px; /* Larger for video */
+  min-height: 500px; /* Taller for video */
+}

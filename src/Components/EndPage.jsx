@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './EndPage.css';
 import greenTick from '../assets/green-tick.svg';
-import MobileBlocker from './MobileBlocker'; // Import your blocker component
+import MobileBlocker from './MobileBlocker'; 
 
 export default function EndPage() {
   const [isLaptop, setIsLaptop] = useState(true);
 
-  // Use the optimized matchMedia approach
   useEffect(() => {
     const mql = window.matchMedia('(min-width: 1024px)');
     const handler = (e) => setIsLaptop(e.matches);
@@ -17,11 +16,9 @@ export default function EndPage() {
   }, []);
 
   const handleNext = () => {
-    // Redirect logic
     window.location.href = '/dashboard'; 
   };
 
-  // Block mobile access
   if (!isLaptop) {
     return <MobileBlocker />;
   }
@@ -40,8 +37,6 @@ export default function EndPage() {
           Your video signature has been<br />
           successfully recorded and saved.
         </p>
-
-        {/* Action Button */}
         <button onClick={handleNext} className="next-button">
           Next
         </button>

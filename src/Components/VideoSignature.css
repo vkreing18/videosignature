@@ -12,7 +12,7 @@
 
 /* Modal and Panel Styles */
 .instruction-modal, .recording-panel {
-  background-color: #121417; /* Figma Card Color */
+  background-color: #121417; 
   border-radius: 28px;
   width: 90%;
   max-width: 580px;

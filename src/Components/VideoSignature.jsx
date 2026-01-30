@@ -32,7 +32,11 @@ export default function VideoSignature() {
       const resp = await fetch("http://localhost:3001/api/get-token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roomName, userId, participantName: "Sahid Mirza" }),
+        body: JSON.stringify({
+          roomName,
+          userId,
+          participantName: "Sahid Mirza",
+        }),
       });
 
       const { token: receivedToken } = await resp.json();
@@ -60,9 +64,11 @@ export default function VideoSignature() {
               </div>
               <div className="text-container">
                 <h3 className="sub-heading">What is a Video Signature?</h3>
-                <p className="body-text">A video signature is used to verify your identity. It ensures that
-you are the person actually giving the interview by capturing a
-short video recording of you answering a question.</p>
+                <p className="body-text">
+                  A video signature is used to verify your identity. It ensures
+                  that you are the person actually giving the interview by
+                  capturing a short video recording of you answering a question.
+                </p>
               </div>
             </div>
             <div className="instruction-item">
@@ -71,15 +77,19 @@ short video recording of you answering a question.</p>
               </div>
               <div className="text-container">
                 <h3 className="sub-heading">What to Do Next?</h3>
-                <p className="body-text">On the next screen, you'll be asked to allow camera and
-microphone access. You'll then answer a simple question
-within 2 minutes. Your response will be recorded and
-submitted automatically.</p>
+                <p className="body-text">
+                  On the next screen, you'll be asked to allow camera and
+                  microphone access. You'll then answer a simple question within
+                  2 minutes. Your response will be recorded and submitted
+                  automatically.
+                </p>
               </div>
             </div>
           </div>
           <div className="modal-footer">
-            <button onClick={handleStart} className="teal-continue-btn">Continue</button>
+            <button onClick={handleStart} className="teal-continue-btn">
+              Continue
+            </button>
           </div>
         </div>
       </div>
@@ -89,7 +99,9 @@ submitted automatically.</p>
   return (
     <div className="app-dark-bg">
       <LiveKitRoom
-        video={true} audio={true} token={token}
+        video={true}
+        audio={true}
+        token={token}
         serverUrl="wss://introductionagent-jxz70fah.livekit.cloud"
         onDisconnected={() => navigate("/preview")}
       >
@@ -110,7 +122,10 @@ function RecordingInterface({ onComplete }) {
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 1) { onComplete(); return 0; }
+        if (prev <= 1) {
+          onComplete();
+          return 0;
+        }
         if (prev === 110) setShowStop(true);
         return prev - 1;
       });
@@ -123,16 +138,28 @@ function RecordingInterface({ onComplete }) {
       <h2 className="teal-title">Record Your Video Signature</h2>
       <div className="divider" />
       <div className="compact-video-viewport">
-        {localTrack ? <VideoTrack trackRef={localTrack} className="signature-video" /> : <div className="loading">Starting...</div>}
+        {localTrack ? (
+          <VideoTrack trackRef={localTrack} className="signature-video" />
+        ) : (
+          <div className="loading">Starting...</div>
+        )}
         <div className="live-rec-pill">● Recording</div>
       </div>
       <div className="countdown-section">
-        <div className="big-time">{Math.floor(timeLeft / 60)}m {timeLeft % 60}s</div>
+        <div className="big-time">
+          {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
+        </div>
         <div className="time-sub">Time remaining</div>
       </div>
       <div className="footer-action">
         {showStop && (
-          <button className="dark-stop-btn" onClick={() => { room.disconnect(); onComplete(); }}>
+          <button
+            className="dark-stop-btn"
+            onClick={() => {
+              room.disconnect();
+              onComplete();
+            }}
+          >
             Stop Recording
           </button>
         )}
