@@ -16,6 +16,7 @@ import MobileBlocker from "./MobileBlocker";
 export default function VideoSignature() {
   const [token, setToken] = useState(null);
   const [isLaptop, setIsLaptop] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // New Loading State
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +27,12 @@ export default function VideoSignature() {
   }, []);
 
   const handleStart = async () => {
+    setIsLoading(true); // Start loading immediately
     try {
+      // 1. Request Browser Permissions
+      await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      
+      // 2. Fetch Token Only After Permission Granted
       const userId = "3232342423423432";
       const roomName = `room-${userId}-${Date.now()}`;
       const resp = await fetch("http://localhost:3001/api/get-token", {
@@ -40,21 +46,26 @@ export default function VideoSignature() {
       });
 
       const { token: receivedToken } = await resp.json();
-      if (receivedToken) setToken(receivedToken);
+      if (receivedToken) {
+        setToken(receivedToken); // This triggers the transition to recording UI
+      }
     } catch (err) {
-      console.error("Error creating room:", err);
+      console.error("Error starting signature process:", err);
+      alert("Camera and Microphone access are required to proceed.");
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
   if (!isLaptop) return <MobileBlocker />;
 
+  // STAY ON INSTRUCTION PAGE TILL TOKEN IS READY
   if (!token) {
     return (
       <div className="app-dark-bg">
         <div className="instruction-modal">
           <div className="modal-header">
             <h1 className="teal-title">Video Signature Instructions</h1>
-            {/* <button className="close-x-btn">✕</button> */}
           </div>
           <div className="divider" />
           <div className="modal-body">
@@ -65,9 +76,9 @@ export default function VideoSignature() {
               <div className="text-container">
                 <h3 className="sub-heading">What is a Video Signature?</h3>
                 <p className="body-text">
-                  A video signature is used to verify your identity. It ensures
-                  that you are the person actually giving the interview by
-                  capturing a short video recording of you answering a question.
+               A video signature is used to verify your identity. It ensures that
+you are the person actually giving the interview by capturing a
+short video recording of you answering a question.
                 </p>
               </div>
             </div>
@@ -78,17 +89,25 @@ export default function VideoSignature() {
               <div className="text-container">
                 <h3 className="sub-heading">What to Do Next?</h3>
                 <p className="body-text">
-                  On the next screen, you'll be asked to allow camera and
-                  microphone access. You'll then answer a simple question within
-                  2 minutes. Your response will be recorded and submitted
-                  automatically.
+                 On the next screen, you'll be asked to allow camera and
+microphone access. You'll then answer a simple question
+within 2 minutes. Your response will be recorded and
+submitted automatically.
                 </p>
               </div>
             </div>
           </div>
           <div className="modal-footer">
-            <button onClick={handleStart} className="teal-continue-btn">
-              Continue
+            <button 
+              onClick={handleStart} 
+              className={`teal-continue-btn ${isLoading ? 'loading-btn' : ''}`}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="btn-loader"></span>
+              ) : (
+                "Continue"
+              )}
             </button>
           </div>
         </div>
@@ -112,6 +131,7 @@ export default function VideoSignature() {
   );
 }
 
+// RecordingInterface remains unchanged, timer starts only on localTrack detection
 function RecordingInterface({ onComplete }) {
   const room = useRoomContext();
   const tracks = useTracks([{ source: Track.Source.Camera, attach: true }]);
@@ -120,9 +140,12 @@ function RecordingInterface({ onComplete }) {
   const localTrack = tracks.find((t) => t.participant.isLocal);
 
   useEffect(() => {
+    if (!localTrack) return;
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
+          clearInterval(timer);
           onComplete();
           return 0;
         }
@@ -130,8 +153,9 @@ function RecordingInterface({ onComplete }) {
         return prev - 1;
       });
     }, 1000);
+
     return () => clearInterval(timer);
-  }, [onComplete]);
+  }, [localTrack, onComplete]);
 
   return (
     <div className="recording-panel">
@@ -139,27 +163,21 @@ function RecordingInterface({ onComplete }) {
       <div className="divider" />
       <div className="compact-video-viewport">
         {localTrack ? (
-          <VideoTrack trackRef={localTrack} className="signature-video" />
+          <>
+            <VideoTrack trackRef={localTrack} className="signature-video" />
+            <div className="live-rec-pill">● Rec</div>
+          </>
         ) : (
-          <div className="loading">Starting...</div>
+          <div className="loading">Starting camera...</div>
         )}
-        <div className="live-rec-pill">● Rec</div>
       </div>
       <div className="countdown-section">
-        <div className="big-time">
-          {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
-        </div>
+        <div className="big-time">{Math.floor(timeLeft / 60)}m {timeLeft % 60}s</div>
         <div className="time-sub">Time remaining</div>
       </div>
       <div className="footer-action">
         {showStop && (
-          <button
-            className="dark-stop-btn"
-            onClick={() => {
-              room.disconnect();
-              onComplete();
-            }}
-          >
+          <button className="dark-stop-btn" onClick={() => { room.disconnect(); onComplete(); }}>
             Stop Recording
           </button>
         )}
