@@ -123,9 +123,9 @@
   color: #F44336;
   border: 1px solid #F44336;
   border-radius: 50px;
-  width: 40%;
-  margin: 10px auto 0 auto;
-  font-weight: 600;
+  width: 35%;
+  margin-left: 33%;
+  font-weight: 400;
   cursor: pointer;
   padding: 10px 0;
 }

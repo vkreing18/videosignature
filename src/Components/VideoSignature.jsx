@@ -143,7 +143,7 @@ function RecordingInterface({ onComplete }) {
         ) : (
           <div className="loading">Starting...</div>
         )}
-        <div className="live-rec-pill">● Recording</div>
+        <div className="live-rec-pill">● Rec</div>
       </div>
       <div className="countdown-section">
         <div className="big-time">
