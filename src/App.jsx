@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import VerificationPage from './Components/VerificationPage';
 import VideoSignature from './Components/videoSignature';
 import EndPage from './Components/EndPage';
+import PreviewPage from './Components/PreviewPage';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" />} />
 
         <Route path="/completed" element={<EndPage />} />
+        <Route path="/preview" element={<PreviewPage />} />
       </Routes>
     </Router>
   );
