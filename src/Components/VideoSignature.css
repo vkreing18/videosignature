@@ -11,7 +11,7 @@
   overflow: hidden;
 }
 
-/* --- Unified Modal Dimensions (580px Width) --- */
+/* --- Unified Modal Dimensions (580px) --- */
 .instruction-modal, .recording-panel, .end-card {
   background-color: #121417; /* Figma Card Color */
   border-radius: 28px;
@@ -53,11 +53,11 @@
 .teal-glow { background: rgba(14, 201, 158, 0.1); color: #0ec99e; }
 .teal-check { background: rgba(14, 201, 158, 0.1); color: #0ec99e; }
 
-/* --- Constant Video Viewport --- */
+/* --- CONSTANT VIDEO VIEWPORT --- */
 .compact-video-viewport {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9; /* Enforces height even when loading */
+  aspect-ratio: 16 / 9; /* Enforces height during processing/starting */
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid #1f2227;
@@ -75,6 +75,7 @@
   transform: rotateY(180deg); /* Mirror effect */
 }
 
+/* --- UI Indicators --- */
 .live-rec-pill {
   position: absolute; top: 12px; right: 12px;
   background: #FF2424; color: white;
@@ -86,14 +87,14 @@
 .big-time { color: #ffffff; font-size: 1.5rem; font-weight: 400; text-align: center; }
 .time-sub { color: #757575; text-align: center; margin-bottom: 5px; }
 
-/* --- Buttons --- */
+/* --- Buttons & States --- */
 .teal-continue-btn {
   background-color: #0ec99e;
   color: #000000;
   padding: 14px 24px;
   border-radius: 50px;
   border: none;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -102,27 +103,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 140px; /* Prevents button size jumping when loading */
+  min-width: 140px; /* Prevent jump during loading */
 }
 
-/* Button Loading State */
-.loading-btn {
+.disabled-btn {
+  background-color: #1f2227 !important;
+  color: #3E3E3E !important;
   cursor: not-allowed;
-  opacity: 0.8;
-}
-
-.btn-loader {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  border-top: 2px solid #000;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  opacity: 0.6;
 }
 
 .re-record-btn {
@@ -141,27 +129,43 @@
   color: #F44336;
   border: 1px solid #F44336;
   border-radius: 50px;
-  width: 35%;
-  margin: 10px auto 0 33%;
-  font-weight: 400;
+  width: 40%;
+  margin: 10px auto 0 auto;
+  font-weight: 600;
   cursor: pointer;
   padding: 10px 0;
 }
 
+/* --- Loading & Polling UI --- */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.btn-loader {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top: 2px solid #000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading { color: #757575; font-size: 0.95rem; text-align: center; }
+
+/* --- Layout Footers --- */
 .preview-action-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   margin-top: 10px;
-}
-
-.loading { color: #757575; font-size: 0.95rem; text-align: center; }
-
-/* Success Icon (End Page) */
-.success-icon-circle {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: rgba(14, 201, 158, 0.1);
-  display: flex; align-items: center; justify-content: center;
-  margin: 30px auto 20px auto;
 }
