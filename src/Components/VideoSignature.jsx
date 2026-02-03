@@ -7,6 +7,7 @@ import {
   useTracks,
   useRoomContext,
   useLocalParticipant,
+  useRemoteParticipants,
 } from "@livekit/components-react";
 import { Track } from "livekit-client";
 
@@ -26,29 +27,19 @@ function KrispActivator() {
   const { microphoneTrack } = useLocalParticipant();
 
   useEffect(() => {
-    // Only attempt to enable if the microphone track is actually published/available
     if (!microphoneTrack || !microphoneTrack.track) return;
 
     const enableKrisp = async () => {
       try {
-        /* FIX: Use the correct standalone function for support checking */
         if (isKrispNoiseFilterSupported()) {
           console.log("Initializing Krisp...");
-          
-          // Initialize the filter instance
           const krisp = KrispNoiseFilter();
-          
-          // Apply the processor to the audio track
           await microphoneTrack.track.setProcessor(krisp);
           
-          // Optionally ensure it is enabled (it usually is by default)
           if (typeof krisp.setEnabled === 'function') {
             await krisp.setEnabled(true);
           }
-          
           console.log("✅ Krisp noise cancellation enabled");
-        } else {
-          console.warn("❌ Krisp not supported on this browser/environment");
         }
       } catch (err) {
         console.error("Failed to initialize Krisp:", err);
@@ -57,11 +48,9 @@ function KrispActivator() {
 
     enableKrisp();
 
-    // Cleanup: Remove processor when component unmounts to prevent audio issues
     return () => {
       if (microphoneTrack?.track?.getProcessor()) {
         microphoneTrack.track.stopProcessor();
-        console.log("Krisp processor stopped");
       }
     };
   }, [microphoneTrack]);
@@ -74,7 +63,7 @@ export default function VideoSignature() {
   const [isLaptop, setIsLaptop] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const userId = "634d1cab101fea9449a9e890r";
+  const userId = "634d1cab101fea9449a9e890a";
 
   useEffect(() => {
     const checkDevice = () => setIsLaptop(window.innerWidth >= 1024);
@@ -84,6 +73,12 @@ export default function VideoSignature() {
   }, []);
 
   const handleStart = async () => {
+    // Prevent "reading getUserMedia" error by checking support
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert("Camera access requires a secure context (HTTPS or localhost).");
+        return;
+    }
+
     setIsLoading(true);
     try {
       // Pre-check permissions
@@ -100,6 +95,7 @@ export default function VideoSignature() {
       if (receivedToken) setToken(receivedToken);
     } catch (err) {
       console.error("Error starting signature process:", err);
+      alert("Please ensure your camera and microphone are connected and allowed.");
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +131,7 @@ export default function VideoSignature() {
               <div className="text-container">
                 <h3 className="sub-heading">What to Do Next?</h3>
                 <p className="body-text">
-                  On the next screen, you'll answer a question within 2 minutes. 
+                  On the next screen, the timer will start once the agent joins. 
                   Your response will be recorded automatically.
                 </p>
               </div>
@@ -173,12 +169,50 @@ export default function VideoSignature() {
 
 function RecordingInterface({ onComplete }) {
   const room = useRoomContext();
+  const remoteParticipants = useRemoteParticipants();
   const tracks = useTracks([{ source: Track.Source.Camera, attach: true }]);
+  
   const [timeLeft, setTimeLeft] = useState(120);
   const [showStop, setShowStop] = useState(false);
+  const [isStopping, setIsStopping] = useState(false);
+  const [isTimerActive, setIsTimerActive] = useState(false);
+
   const localTrack = tracks.find((t) => t.participant.isLocal);
 
+  // Activate timer when agent (remote participant) joins
   useEffect(() => {
+    if (remoteParticipants.length > 0 && !isTimerActive) {
+      console.log("Agent joined - starting timer.");
+      setIsTimerActive(true);
+    }
+  }, [remoteParticipants, isTimerActive]);
+
+  const handleFinalizeRecording = async () => {
+    setIsStopping(true);
+    try {
+      // Unpublish to stop data stream visually/logically
+      const videoTrack = localTrack?.participant.getTrack(Track.Source.Camera);
+      const audioTrack = localTrack?.participant.getTrack(Track.Source.Microphone);
+      
+      videoTrack?.videoTrack?.stop();
+      audioTrack?.audioTrack?.stop();
+
+      // IMPORTANT: Wait 2 seconds for server buffer sync to prevent 24s/30s video cut
+      setTimeout(() => {
+        room.disconnect();
+        onComplete();
+      }, 2000);
+    } catch (err) {
+      console.error("Error finishing recording:", err);
+      room.disconnect();
+      onComplete();
+    }
+  };
+
+  useEffect(() => {
+    // Only count down if timer is active and we aren't already stopping
+    if (!isTimerActive || isStopping) return;
+
     const startTime = Date.now();
     const totalDuration = 120 * 1000;
 
@@ -188,48 +222,60 @@ function RecordingInterface({ onComplete }) {
 
       setTimeLeft(remaining);
 
+      // Show stop button after 10 seconds of active recording
       if (elapsed >= 10000) {
         setShowStop(true);
       }
 
       if (elapsed >= totalDuration) {
         clearInterval(timer);
-        room.disconnect();
-        onComplete();
+        handleFinalizeRecording();
       }
     }, 100);
 
     return () => clearInterval(timer);
-  }, [onComplete, room]);
+  }, [onComplete, room, isStopping, isTimerActive]);
 
   return (
     <div className="recording-panel">
-      <h2 className="teal-title">Record Your Video Signature</h2>
+      <h2 className="teal-title">
+        {!isTimerActive 
+          ? "Waiting for Agent..." 
+          : isStopping 
+            ? "Finalizing Signature..." 
+            : "Video Signature Recording"}
+      </h2>
       <div className="divider" />
+      
       <div className="compact-video-viewport">
-        {localTrack ? (
+        {localTrack && !isStopping ? (
           <>
             <VideoTrack trackRef={localTrack} className="signature-video" />
-            <div className="live-rec-pill">● Rec</div>
+            <div className={`live-rec-pill ${!isTimerActive ? "standby-pill" : ""}`}>
+              {isTimerActive ? "● Rec" : "Standby"}
+            </div>
           </>
         ) : (
-          <div className="loading">Starting camera...</div>
+          <div className="loading">
+            {isStopping ? "Saving video..." : "Connecting camera..."}
+          </div>
         )}
       </div>
+
       <div className="countdown-section">
-        <div className="big-time">
+        <div className={`big-time ${!isTimerActive ? "dimmed" : ""}`}>
           {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
         </div>
-        <div className="time-sub">Time remaining</div>
+        <p className="time-sub">
+          {!isTimerActive ? "Timer starts when agent joins" : "Time remaining"}
+        </p>
       </div>
+
       <div className="footer-action">
-        {showStop && (
+        {showStop && !isStopping && (
           <button
             className="dark-stop-btn"
-            onClick={() => {
-              room.disconnect();
-              onComplete();
-            }}
+            onClick={handleFinalizeRecording}
           >
             Stop Recording
           </button>
